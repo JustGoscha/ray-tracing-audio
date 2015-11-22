@@ -1,24 +1,9 @@
 @CHARSET "UTF-8";
 
-@font-face { /* Entypo pictograms by Daniel Bruce — www.entypo.com */
-	font-family: 'Entypo';
-	src: url('../assets/entypo.ttf') format('truetype'),
-		url('../assets/entypo.eot') format('eot');
-}
-
 * {
 	margin: 0px;
 	padding: 0px;
 	box-sizing: border-box;
-}
-
-a{
-	text-decoration: none;
-	color: #247;
-}
-
-a:hover{
-	color: #369;
 }
 
 body{
@@ -128,9 +113,6 @@ img {
   -ms-interpolation-mode: bicubic;
 }
 
-ul>li{
-	list-style:none;
-}
 
 /* Generic classes */
 .hide { /* Hide stuff without resorting to display:none; */
@@ -149,30 +131,5 @@ ul>li{
 	line-height: 0 !important;
 	padding: 0 !important;
 	margin: 0 !important;
-}
-
-/* Styles go here */
-
-
-
-#d{
-  text-align: center;
-}
-
-h1{
-  color: #444;
-  font-family: "Eau Naturelle", "Helvetica", "Arial", "Lucida Grande", "Gill Sans", "Verdana", sans-serif;
-  font-weight: 500;
-}
-
-button{
-  border: none;
-  font-size: 1.2em;
-  padding: 0.4em;
-  color: #eee;
-  background-color: #29b;
-  cursor: pointer;
-  border-radius: 0.2em;
-  margin: 0.3em;
 }
 
