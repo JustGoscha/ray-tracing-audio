@@ -1,0 +1,25 @@
+{
+  "name": "ray-tracing-audio",
+  "version": "1.0.0",
+  "description": "A simple ray tracing sound propagation engine for the web",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Georg Graf",
+  "license": "MIT",
+  "dependencies": {
+    "babel": "^5.8.23",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.3.0",
+    "gulp-uglify": "~1.0.1",
+    "nodemon": "^1.8.0",
+    "browserify": "~12.0.1",
+    "babelify": "~7.2.0",
+    "vinyl-source-stream": "~1.1.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "~6.2.0"
+  },
+  "devDependencies": {
+    "gulp-concat": "~2.4.2"
+  }
+}

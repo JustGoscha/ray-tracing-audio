@@ -1,0 +1,31 @@
+var gulp = require('gulp');
+var concat = require('gulp-concat');
+var babel = require('gulp-babel');
+var path = require('path');
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
+var babelify = require('babelify');
+
+gulp.task('default', ['js']);
+gulp.task('build', ['js']);
+
+gulp.task('js', function(){
+  var b = browserify({
+    entries: 'js/main.js', 
+    fullPaths: false,
+    extensions: ['.js'], 
+    debug: true
+  });
+
+  return b.transform(babelify)
+        .bundle()
+        .pipe(source('bundle.js'))
+        .pipe(gulp.dest('build'));
+
+  // include main.js first, exclude js/lib
+  // gulp.src(['js/**/main.js','js/**/*.js', '!js/lib/*'])   
+  // .pipe(babel())
+  // .pipe(concat('bundle.js')) 
+  // .pipe(gulp.dest('build'));
+
+});
