@@ -1,4 +1,10 @@
-// main.js
-import * as test from './testModule'
+import {startAnimationLoop} from './animation'
+import * as interaction from './interaction'
+import player from './player'
 
-test.testFunc("This is main.js calling!");
+function init(){
+  interaction.init();
+  startAnimationLoop();
+}
+
+init();

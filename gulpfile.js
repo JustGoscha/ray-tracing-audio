@@ -19,7 +19,7 @@ gulp.task('js', function(){
 
   return b.transform(babelify)
         .bundle()
-        .pipe(source('bundle.js'))
+        .pipe(source('tracer.js'))
         .pipe(gulp.dest('build'));
 
   // include main.js first, exclude js/lib
