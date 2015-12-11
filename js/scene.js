@@ -7,6 +7,7 @@ var Scene = {
   primaryRays: [],
   finishedLines: [],
   intersections: [],
+  hiddenIntersections: [],
   lineBeingDrawn: null, 
   
   player: player,
@@ -17,6 +18,7 @@ var Scene = {
 Scene.render = function(){
   drawPrimaryRays();
   drawFinishedLines();
+  drawHiddenIntersections();
   drawIntersections();
   drawLineBeingDrawn();
   player.draw();
@@ -41,6 +43,13 @@ function drawPrimaryRays(){
 function drawIntersections(){
   ctx.fillStyle = colors.red;
   for(var point of Scene.intersections){
+    ctx.fillRect(point.x-5, point.y-5, 10, 10);
+  }
+}; 
+
+function drawHiddenIntersections(){
+  ctx.fillStyle = colors.lightRed;
+  for(var point of Scene.hiddenIntersections){
     ctx.fillRect(point.x-5, point.y-5, 10, 10);
   }
 }; 
