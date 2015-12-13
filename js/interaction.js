@@ -5,12 +5,15 @@ import player from './player';
 import colors from './misc/colors';
 import {updatePrimaryRays} from './shoot-rays'
 import Line from './geometry/Line'
+import {playSound, playAllSounds} from './webaudio/test-sound'
 
 import Scene from './scene'
 
 function init(){
   canvas.addEventListener('mousedown', discernEvent);
   Mousetrap.bind(["cmd+z", "ctrl+z"], removeLastLine); 
+  Mousetrap.bind('x', playSound);
+  Mousetrap.bind('c', playAllSounds);
 }
 
 function removeLastLine(){
@@ -82,5 +85,7 @@ function finishDrawing(event){
   canvas.removeEventListener('mousemove', updateDrawing);
   canvas.removeEventListener('mouseup', finishDrawing);
 };
+
+
 
 export {init};

@@ -6,6 +6,7 @@ var Scene = {
   // objects in the scene
   primaryRays: [],
   finishedLines: [],
+  _distances: [],
   intersections: [],
   hiddenIntersections: [],
   lineBeingDrawn: null, 

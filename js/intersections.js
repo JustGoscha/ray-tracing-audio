@@ -62,7 +62,7 @@ function roughDistance(p1,p2){
   return dist;
 }
 
-function distance(p1, p2){
+function distanceBetween(p1, p2){
   var a,b,dist = 0;
   a = p1.x-p2.x;
   b = p1.y-p2.y;
@@ -74,6 +74,7 @@ function checkRayLineIntersections(){
   intersectionsChecked = 0;
   Scene.intersections = []; // the nearest intersection
   Scene.hiddenIntersections = []; // all other intersections
+  Scene._distances = [];
 
   var nearestIntersect;
   var shortestDistance = Infinity;
@@ -95,8 +96,12 @@ function checkRayLineIntersections(){
         Scene.hiddenIntersections.push(intersectPoint);
       }
     }
+
     if(nearestIntersect){
       Scene.intersections.push(nearestIntersect);
+      Scene._distances.push(distanceBetween(nearestIntersect, ray));
+    } else {
+      Scene._distances.push(10000);
     }
   }
 };
