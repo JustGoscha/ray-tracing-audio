@@ -5,7 +5,7 @@ import player from './player';
 import colors from './misc/colors';
 import {updatePrimaryRays} from './shoot-rays'
 import Line from './geometry/Line'
-import {playSound, playAllSounds} from './webaudio/test-sound'
+import {playSound, playAllSounds, toggleContinuous} from './webaudio/test-sound'
 
 import Scene from './scene'
 
@@ -14,6 +14,7 @@ function init(){
   Mousetrap.bind(["cmd+z", "ctrl+z"], removeLastLine); 
   Mousetrap.bind('x', playSound);
   Mousetrap.bind('c', playAllSounds);
+  Mousetrap.bind('v', toggleContinuous);
 }
 
 function removeLastLine(){
