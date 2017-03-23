@@ -17,7 +17,7 @@ var Scene = {
 }
 
 Scene.render = function(){
-  drawPrimaryRays();
+  drawRays();
   drawFinishedLines();
   drawHiddenIntersections();
   drawIntersections();
@@ -35,7 +35,7 @@ function drawFinishedLines(){
   }
 };
 
-function drawPrimaryRays(){
+function drawRays(){
   for(var ray of Scene.primaryRays){
     ray.draw(ctx);
   }

@@ -1,5 +1,6 @@
 import Scene from './scene'
-import {dotProduct, subtract} from './math/vector-math'
+import {dotProduct, subtract, reflectionVector, normalize} from './math/vector-math'
+import Ray from './geometry/Ray'
 
 /**
  * [rayLineIntersection description]
@@ -29,7 +30,12 @@ function rayLineIntersection(ray, line){
   } else {
     return null;
   }
-};
+}
+
+function reflectRay(ray, line, intersectionPoint) {
+  const reflectedVector = reflectionVector(ray.vector, normalize(line.vector))
+  return new Ray(intersectionPoint.x, intersectionPoint.y, reflectedVector)
+}
 
 function aabbIntersect(box, ray){
   var s,t = 0;
@@ -77,12 +83,14 @@ function checkRayLineIntersections(){
   Scene._distances = [];
 
   var nearestIntersect;
+  var nearestIntersectLine;
   var shortestDistance = Infinity;
   var distance = 0;
 
   for(var ray of Scene.primaryRays){
     shortestDistance = Infinity;
     nearestIntersect = null;
+    nearestIntersectLine=null;
 
     for(var line of Scene.finishedLines){
       var intersectPoint = rayLineIntersection(ray, line);
@@ -91,6 +99,7 @@ function checkRayLineIntersections(){
         distance = roughDistance(intersectPoint, ray);
         if(distance < shortestDistance){
           nearestIntersect = intersectPoint;
+          nearestIntersectLine = line;
           shortestDistance = distance;
         } 
         Scene.hiddenIntersections.push(intersectPoint);
@@ -98,9 +107,11 @@ function checkRayLineIntersections(){
     }
 
     if(nearestIntersect){
-      Scene.intersections.push(nearestIntersect);
+      Scene.intersections.push(nearestIntersect)
+      ray.reflect(nearestIntersectLine, nearestIntersect)
       Scene._distances.push(distanceBetween(nearestIntersect, ray));
     } else {
+      ray.child = undefined
       Scene._distances.push(10000);
     }
   }
