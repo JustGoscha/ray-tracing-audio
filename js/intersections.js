@@ -76,6 +76,52 @@ function distanceBetween(p1, p2){
   return dist;
 }
 
+const rayIntersectReducer = (ray) => (
+  ({shortestDistance, nearestIntersect, nearestIntersectLine}, line) => {
+    if (ray.touchedLine !== line) {
+      const intersectPoint = rayLineIntersection(ray, line)
+      if (intersectPoint) {
+        const distance = roughDistance(intersectPoint, ray)
+        if(distance < shortestDistance){
+          nearestIntersect = intersectPoint
+          nearestIntersectLine = line
+          shortestDistance = distance
+        } 
+        Scene.hiddenIntersections.push(intersectPoint)
+      }
+    }
+    return {shortestDistance, nearestIntersect, nearestIntersectLine}
+  }
+)
+
+function rayMapper(ray) {
+  let rayMeta = Scene.finishedLines.reduce(
+    rayIntersectReducer(ray), 
+    {shortestDistance: Infinity, nearestIntersect: null, nearestIntersectLine: null}
+  )
+  if (rayMeta.nearestIntersect) {
+    ray.reflect(rayMeta.nearestIntersectLine, rayMeta.nearestIntersect)
+    if (ray.child && ray.maxChildren > 0) {
+      // some dangerous recursive shit...
+      forEachMappedRay(rayMapper(ray.child))
+    }
+  }
+  return { ray, 
+    shortestDistance: rayMeta.shortestDistance,
+    nearestIntersect: rayMeta.nearestIntersect,
+    nearestIntersectLine: rayMeta.nearestIntersectLine
+  }
+}
+
+const forEachMappedRay =({ray, shortestDistance, nearestIntersect, nearestIntersectLine}) => {
+  if (nearestIntersect) {
+    Scene.intersections.push(nearestIntersect)
+    Scene._distances.push(distanceBetween(nearestIntersect, ray));
+  } else {
+    ray.child = undefined
+  }
+}
+
 function checkRayLineIntersections(){
   intersectionsChecked = 0;
   Scene.intersections = []; // the nearest intersection
@@ -87,34 +133,37 @@ function checkRayLineIntersections(){
   var shortestDistance = Infinity;
   var distance = 0;
 
-  for(var ray of Scene.primaryRays){
-    shortestDistance = Infinity;
-    nearestIntersect = null;
-    nearestIntersectLine=null;
+  Scene.primaryRays.map(rayMapper)
+  .forEach(forEachMappedRay)
 
-    for(var line of Scene.finishedLines){
-      var intersectPoint = rayLineIntersection(ray, line);
+  // for(var ray of Scene.primaryRays){
+  //   shortestDistance = Infinity;
+  //   nearestIntersect = null;
+  //   nearestIntersectLine=null;
+
+  //   for(var line of Scene.finishedLines){
+  //     var intersectPoint = rayLineIntersection(ray, line);
       
-      if(intersectPoint){
-        distance = roughDistance(intersectPoint, ray);
-        if(distance < shortestDistance){
-          nearestIntersect = intersectPoint;
-          nearestIntersectLine = line;
-          shortestDistance = distance;
-        } 
-        Scene.hiddenIntersections.push(intersectPoint);
-      }
-    }
+  //     if(intersectPoint){
+  //       distance = roughDistance(intersectPoint, ray);
+  //       if(distance < shortestDistance){
+  //         nearestIntersect = intersectPoint;
+  //         nearestIntersectLine = line;
+  //         shortestDistance = distance;
+  //       } 
+  //       Scene.hiddenIntersections.push(intersectPoint);
+  //     }
+  //   }
 
-    if(nearestIntersect){
-      Scene.intersections.push(nearestIntersect)
-      ray.reflect(nearestIntersectLine, nearestIntersect)
-      Scene._distances.push(distanceBetween(nearestIntersect, ray));
-    } else {
-      ray.child = undefined
-      Scene._distances.push(10000);
-    }
-  }
+  //   if(nearestIntersect){
+  //     Scene.intersections.push(nearestIntersect)
+  //     ray.reflect(nearestIntersectLine, nearestIntersect)
+  //     Scene._distances.push(distanceBetween(nearestIntersect, ray));
+  //   } else {
+  //     ray.child = undefined
+  //     Scene._distances.push(10000);
+  //   }
+  // }
 };
 
 export {checkRayLineIntersections};
