@@ -1,6 +1,6 @@
 import {audioCtx} from './webaudio'
 import {masterChannel} from './master'
-import {numberOfRays, rayAngle, rayAngles} from '../config.js'
+import {numberOfRays, rayAngle, rayAngles, maxChildren} from '../config.js'
 
 // 
 // Create panners for each direction a sound should play from
@@ -30,7 +30,7 @@ function createPanner(angle){
  */
 var panners = new Array(numberOfRays);
 function createPanners(){
-  for(var i = 0; i<numberOfRays; i++){
+  for(var i = 0; i<panners.length; i++){
     panners[i] = createPanner(rayAngles[i]);
   }
 }

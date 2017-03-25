@@ -1,7 +1,7 @@
 const numberOfRays = 60;
 // 1m = 10px -> ratio = 10
 const pixelMeterRatio = 10;
-const maxChildren = 10
+const maxChildren = 5
 
 const rayAngle = 2*Math.PI/numberOfRays;
 

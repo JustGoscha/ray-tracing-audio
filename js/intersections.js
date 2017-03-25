@@ -34,7 +34,7 @@ function rayLineIntersection(ray, line){
 
 function reflectRay(ray, line, intersectionPoint) {
   const reflectedVector = reflectionVector(ray.vector, normalize(line.vector))
-  return new Ray(intersectionPoint.x, intersectionPoint.y, reflectedVector)
+  return new Ray(intersectionPoint, reflectedVector)
 }
 
 function aabbIntersect(box, ray){
@@ -118,6 +118,7 @@ const forEachMappedRay =({ray, shortestDistance, nearestIntersect, nearestInters
     Scene.intersections.push(nearestIntersect)
     Scene._distances.push(distanceBetween(nearestIntersect, ray));
   } else {
+    Scene._distances.push(10000)
     ray.child = undefined
   }
 }

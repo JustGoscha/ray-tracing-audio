@@ -4,24 +4,22 @@ import Point from './geometry/Point'
 import {numberOfRays, rayAngle, rayAngles} from './config.js'
 import Scene from './scene'
 
-var {primaryRays} = Scene;
+var {primaryRays} = Scene
 
 function shootRaysFromPlayer(){
-  for(var i = 0; i<numberOfRays; i++){
-    var angle = rayAngles[i];
-    var vector = new Point(Math.cos(angle), Math.sin(angle));
-    var ray = new Ray(player.x, player.y, vector);
-    Scene.primaryRays.push(ray);
-  }
-};
+  Scene.primaryRays = rayAngles.map(angle => {
+    const vector = new Point(Math.cos(angle), Math.sin(angle))
+    return new Ray(player.position, vector)
+  })
+}
 
 function updatePrimaryRays(){
-  for(var ray of Scene.primaryRays){
-    ray.updatePosition(player.x, player.y);
-  }
-};
+  Scene.primaryRays.forEach(ray => 
+    ray.updatePosition(player.position)
+  )
+}
 
-console.log('shoot-rays.js');
-shootRaysFromPlayer();
+console.log('shoot-rays.js')
+shootRaysFromPlayer()
 
 export {shootRaysFromPlayer, updatePrimaryRays}

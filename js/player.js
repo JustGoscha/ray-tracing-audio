@@ -1,28 +1,30 @@
 import {viewport} from './util/browser-util'
 import {ctx} from './canvas'
 import colors from './misc/colors'
+import Point from './geometry/Point'
 
-function Player(x,y){
-  this.x = x;
-  this.y = y;
+class Player{
+  constructor (x,y) {
+    this.position = new Point(x,y)
+  }
+
+  get x() { return this.position.x }
+  get y() { return this.position.y }
+
+  draw(){
+    ctx.fillStyle = colors.slight;
+    ctx.fillRect(this.x-5, this.y-5, 10, 10);
+  }
+
+  set(x,y){
+    this.position.set(x,y)
+  }
 }
 
-Player.prototype.draw = function(){
-  ctx.fillStyle = colors.slight;
-  ctx.fillRect(this.x-5, this.y-5, 10, 10);
-};
-
-Player.prototype.set = function(x,y){
-  this.x = x;
-  this.y = y;
+const initPlayer = function(){
+  var {width, height} = viewport()
+  return new Player(width/2, height/2)
 }
+const player = initPlayer()
 
-var initPlayer = function(){
-  var {width, height} = viewport();
-  return player = new Player(width/2, height/2);
-};
-
-var player = initPlayer();
-
-
-export default player;
+export default player
