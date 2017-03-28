@@ -5,11 +5,13 @@ import colors from './misc/colors'
 var Scene = {
   // objects in the scene
   primaryRays: [],
+  circles: [],
   finishedLines: [],
   _distances: [],
   intersections: [],
   hiddenIntersections: [],
-  lineBeingDrawn: null, 
+  lineBeingDrawn: null,
+  circleBeingDrawn: null, 
   
   player: player,
   canvas: canvas,
@@ -22,7 +24,9 @@ Scene.render = function(){
   drawHiddenIntersections();
   drawIntersections();
   drawLineBeingDrawn();
-  player.draw();
+  if (Scene.circleBeingDrawn) Scene.circleBeingDrawn.draw(this.ctx) 
+  this.circles.forEach(circle => circle.draw(this.ctx))
+  this.player.draw();
 }
 
 function drawLineBeingDrawn(){

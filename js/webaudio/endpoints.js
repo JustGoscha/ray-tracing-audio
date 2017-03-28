@@ -37,4 +37,22 @@ function createPanners(){
 
 createPanners();
 
+/**
+ * ... a sound ray is a primary ray that
+ * starts at the head of the player
+ * and represents also all it's children
+ * and reflected rays
+ */
+class SoundRay {
+  constructor(ray, angle) {
+    this.ray = ray
+    this.angle = angle 
+    this.panner = createPanner(angle)
+  }
+
+  draw() {
+    this.ray.draw()
+  }
+}
+
 export {panners}

@@ -26,6 +26,25 @@ function normalize(v) {
   }
 }
 
+function distanceBetween(p1, p2){
+  var a,b,dist = 0;
+  a = p1.x-p2.x;
+  b = p1.y-p2.y;
+  dist = Math.sqrt(a*a+b*b);
+  return dist;
+}
+
+/**
+ * The  angle between two vectors if they would start
+ * at the same point, from v1 counter-clockwise to v2
+ * @param  {Point} v1 [description]
+ * @param  {Point} v2 [description]
+ * @return {number}    angle in radians
+ */
+function angleBetween(v1, v2) {
+  return ((vectorToAngle(v2) - vectorToAngle(v1)) + PI2)%PI2
+}
+
 function reflectionVector(v1, v2) {
   const angle1 = vectorToAngle(v1)
   const angle2 = vectorToAngle(v2) % Math.PI
@@ -54,4 +73,14 @@ const subtract = function(a,b){
   return {x: a.x - b.x, y: a.y - b.y};
 }
 
-export {near, subtract, dotProduct, vectorToAngle, reflectionVector, normalize};
+export {
+  near,
+  subtract,
+  dotProduct,
+  vectorToAngle,
+  reflectionVector,
+  normalize,
+  distanceBetween,
+  angleBetween,
+}
+

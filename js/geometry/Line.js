@@ -29,13 +29,13 @@ Line.prototype.draw = function() {
   ctx.closePath();
 };
 
-Line.prototype.setPoint2 = function(x,y){
+Line.prototype.setEnd = function(x,y){
   this.x1 = x;
   this.y1 = y;
   this.vector.set(x - this.x, y-this.y);
 }
 
-Line.prototype.setPoint1 = function(x,y){
+Line.prototype.setStart = function(x,y){
   this.x = x;
   this.y = y;
   this.vector.set(this.x - x1, this.y - y1);

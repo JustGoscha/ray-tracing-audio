@@ -1,5 +1,11 @@
 import Scene from './scene'
-import {dotProduct, subtract, reflectionVector, normalize} from './math/vector-math'
+import {
+  dotProduct, 
+  subtract, 
+  reflectionVector, 
+  normalize, 
+  distanceBetween,
+} from './math/vector-math'
 import Ray from './geometry/Ray'
 
 /**
@@ -30,6 +36,43 @@ function rayLineIntersection(ray, line){
   } else {
     return null;
   }
+}
+
+function rayCircleIntersection(ray, circle) {
+  // Schnittpunkt mit einem Kreis ist nur der 
+  // Schnittpunkt mit einer einer Linie der 
+  // Länge r die im Zentrum des Kreises startet
+  // 
+  // Also hat man eine Menge an Linien
+  // und sucht nach einer Lösung für die Gleichung
+  // 
+  // unbekannt ist hierbei die Richtung der Linie
+  // 
+  // um rauszufinden ob der Kreis überhaupt 
+  // geschnitten wird, muss man die orthogonale
+  // vom Mittelpunkt zur Linie herausfinden.
+  // Ist diese kleiner als der Radius, gibt es zwei
+  // Schnittpunkte
+  // 
+  const centerToRayVector = new Point(
+    ray.start.x - circle.center.x, 
+    ray.start.y - circle.center.y
+  )
+
+  const checkAngle = angleBetween(centerToRayVector, ray.vector)
+
+  if (checkAngle < Math.PI || checkAngle > 1.5 * Math.PI) {
+    // no chance...
+    return null
+  }
+
+  const angle = Math.abs(Math.PI - checkAngle)
+  const distance = distanceBetween(circle.center, ray.start)
+  // if (checkAngle < Math.PI) {
+  //   angle = Math.PI - checkAngle
+  // } else {
+  //   angle = checkAngle - Math.PI
+  // }
 }
 
 function reflectRay(ray, line, intersectionPoint) {
@@ -68,13 +111,7 @@ function roughDistance(p1,p2){
   return dist;
 }
 
-function distanceBetween(p1, p2){
-  var a,b,dist = 0;
-  a = p1.x-p2.x;
-  b = p1.y-p2.y;
-  dist = Math.sqrt(a*a+b*b);
-  return dist;
-}
+
 
 const rayIntersectReducer = (ray) => (
   ({shortestDistance, nearestIntersect, nearestIntersectLine}, line) => {

@@ -155,7 +155,7 @@ var updateDrawing = function(event){
   if(!lineBeingDrawn) return;
 
   var {x,y} = getMousePositionFromEvent(event);
-  lineBeingDrawn.setPoint2(x,y);
+  lineBeingDrawn.setEnd(x,y);
 
   // get current x1 and y1 corrdinate and update current Line
 };
@@ -164,7 +164,7 @@ var finishDrawing = function(event){
   // get end x1, y1 coordinate and add to finished Lines
   
   var {x,y} = getMousePositionFromEvent(event);
-  lineBeingDrawn.setPoint2(x,y);
+  lineBeingDrawn.setEnd(x,y);
   lineBeingDrawn.color = colors.line;
   lineBeingDrawn.width = 4;
   finishedLines.push(lineBeingDrawn);
@@ -360,7 +360,7 @@ Line.prototype.draw = function(ctx) {
   ctx.closePath();
 };
 
-Line.prototype.setPoint2 = function(x,y){
+Line.prototype.setEnd = function(x,y){
   this.x1 = x;
   this.y1 = y;
   this.vector.x = x - this.x;

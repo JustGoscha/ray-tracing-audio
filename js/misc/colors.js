@@ -6,7 +6,8 @@ var colors = {
   red: "#a02e61",
   lightRed: "hsla(337, 20%, 40%, 0.5)",
   light: "#ffe3dc",
-  slight: "#99ad7c"
+  slight: "#99ad7c",
+  circle: "#53ab6d",
 };
 
 
