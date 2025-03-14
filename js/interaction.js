@@ -11,12 +11,55 @@ import {playSound, playAllSounds, toggleContinuous} from './webaudio/test-sound'
 
 import Scene from './scene'
 
+const MOVEMENT_SPEED = 2; // pixels per frame
+
+const keys = {
+  w: false,
+  a: false,
+  s: false,
+  d: false
+};
+
+function updatePlayerMovement() {
+  let dx = 0;
+  let dy = 0;
+  
+  if (keys.w) dy -= MOVEMENT_SPEED;
+  if (keys.s) dy += MOVEMENT_SPEED;
+  if (keys.a) dx -= MOVEMENT_SPEED;
+  if (keys.d) dx += MOVEMENT_SPEED;
+  
+  if (dx !== 0 || dy !== 0) {
+    player.set(player.x + dx, player.y + dy);
+    updatePrimaryRays();
+  }
+}
+
 function init(){
   canvas.addEventListener('mousedown', discernEvent);
   Mousetrap.bind(["cmd+z", "ctrl+z"], removeLast); 
   Mousetrap.bind('x', playSound);
   Mousetrap.bind('c', playAllSounds);
   Mousetrap.bind('v', toggleContinuous);
+  
+  // Add WASD controls with keydown/keyup
+  document.addEventListener('keydown', (e) => {
+    switch(e.key.toLowerCase()) {
+      case 'w': keys.w = true; break;
+      case 'a': keys.a = true; break;
+      case 's': keys.s = true; break;
+      case 'd': keys.d = true; break;
+    }
+  });
+  
+  document.addEventListener('keyup', (e) => {
+    switch(e.key.toLowerCase()) {
+      case 'w': keys.w = false; break;
+      case 'a': keys.a = false; break;
+      case 's': keys.s = false; break;
+      case 'd': keys.d = false; break;
+    }
+  });
 }
 
 let undos = []
@@ -133,4 +176,4 @@ function finishDrawing(type){
 
 
 
-export {init};
+export {init, updatePlayerMovement};
