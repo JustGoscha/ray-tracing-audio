@@ -128,7 +128,6 @@ function finishDrawing(type){
   const drawing = drawingModes[type]
   return (event) => {
     drawing.finish(event)
-    
   }
 };
 

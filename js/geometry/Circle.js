@@ -9,7 +9,7 @@ class Circle {
   draw(ctx, color) {
     ctx.beginPath()
     const {x,y} = this.center
-    ctx.lineWidth = 1
+    ctx.lineWidth = 2
     ctx.arc(x,y,this.radius,0,2*Math.PI)
     ctx.strokeStyle = this.color || colors.circle
     ctx.stroke()
