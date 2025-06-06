@@ -5,6 +5,9 @@ A sound engine for the web with sound propagation simulation with binaural capab
 See live demo here:
 https://justgoscha.github.io/ray-tracing-audio/
 
+https://github.com/user-attachments/assets/1526e4f9-4a53-44aa-b299-3d05975732a6
+
+
 ## Description
 
 Ray Tracing Audio is a web-based sound propagation engine that simulates how sound travels through spaces. It uses ray tracing techniques to model sound reflections and propagation, with binaural audio output capabilities for immersive 3D audio experiences.
