@@ -7,6 +7,8 @@ import {
   distanceBetween,
 } from './math/vector-math'
 import Ray from './geometry/Ray'
+import Circle from './geometry/Circle';
+import Line from './geometry/Line';
 
 /**
  * [rayLineIntersection description]
@@ -39,44 +41,54 @@ function rayLineIntersection(ray, line){
 }
 
 function rayCircleIntersection(ray, circle) {
-  // Schnittpunkt mit einem Kreis ist nur der 
-  // Schnittpunkt mit einer einer Linie der 
-  // Länge r die im Zentrum des Kreises startet
-  // 
-  // Also hat man eine Menge an Linien
-  // und sucht nach einer Lösung für die Gleichung
-  // 
-  // unbekannt ist hierbei die Richtung der Linie
-  // 
-  // um rauszufinden ob der Kreis überhaupt 
-  // geschnitten wird, muss man die orthogonale
-  // vom Mittelpunkt zur Linie herausfinden.
-  // Ist diese kleiner als der Radius, gibt es zwei
-  // Schnittpunkte
-  // 
-  const centerToRayVector = new Point(
-    ray.start.x - circle.center.x, 
-    ray.start.y - circle.center.y
-  )
+  // Vector from circle center to ray start
+  const centerToRay = {
+    x: ray.start.x - circle.center.x,
+    y: ray.start.y - circle.center.y
+  };
 
-  const checkAngle = angleBetween(centerToRayVector, ray.vector)
+  // Quadratic equation coefficients
+  // at² + bt + c = 0
+  const a = dotProduct(ray.vector, ray.vector);
+  const b = 2 * dotProduct(ray.vector, centerToRay);
+  const c = dotProduct(centerToRay, centerToRay) - (circle.radius * circle.radius);
 
-  if (checkAngle < Math.PI || checkAngle > 1.5 * Math.PI) {
-    // no chance...
-    return null
+  // Calculate discriminant
+  const discriminant = b * b - 4 * a * c;
+
+  // No intersection if discriminant is negative
+  if (discriminant < 0) {
+    return null;
   }
 
-  const angle = Math.abs(Math.PI - checkAngle)
-  const distance = distanceBetween(circle.center, ray.start)
-  // if (checkAngle < Math.PI) {
-  //   angle = Math.PI - checkAngle
-  // } else {
-  //   angle = checkAngle - Math.PI
-  // }
+  // Calculate intersection points
+  const t1 = (-b - Math.sqrt(discriminant)) / (2 * a);
+  const t2 = (-b + Math.sqrt(discriminant)) / (2 * a);
+
+  // We only want intersections in the positive direction of the ray
+  let t = t1;
+  if (t < 0) {
+    t = t2;
+    if (t < 0) {
+      return null;  // Both intersections behind the ray
+    }
+  }
+
+  // Return the intersection point
+  return {
+    rayPosition: t,
+    x: ray.start.x + t * ray.vector.x,
+    y: ray.start.y + t * ray.vector.y
+  };
 }
 
-function reflectRay(ray, line, intersectionPoint) {
+function reflectRayFromLine(ray, line, intersectionPoint) {
   const reflectedVector = reflectionVector(ray.vector, normalize(line.vector))
+  return new Ray(intersectionPoint, reflectedVector)
+}
+
+function reflectRayFromCircle(ray, circle, intersectionPoint) {
+  const reflectedVector = reflectionVector(ray.vector, normalize(circle.center.subtract(intersectionPoint)))
   return new Ray(intersectionPoint, reflectedVector)
 }
 
@@ -113,31 +125,59 @@ function roughDistance(p1,p2){
 
 
 
+/**
+ * Creates a reducer function that finds the nearest intersection point between a ray and scene lines
+ * 
+ * @param {Ray} ray - The ray to check intersections for
+ * @returns {Function} A reducer function that takes the current state and a line to check
+ * @returns {Object} The reducer returns an object containing:
+ *   - shortestDistance: Distance to nearest intersection
+ *   - nearestIntersect: Nearest intersection point found
+ *   - nearestIntersectGeometry: Geometry that created the nearest intersection
+ */
 const rayIntersectReducer = (ray) => (
-  ({shortestDistance, nearestIntersect, nearestIntersectLine}, line) => {
-    if (ray.touchedLine !== line) {
-      const intersectPoint = rayLineIntersection(ray, line)
-      if (intersectPoint) {
-        const distance = roughDistance(intersectPoint, ray)
-        if(distance < shortestDistance){
-          nearestIntersect = intersectPoint
-          nearestIntersectLine = line
-          shortestDistance = distance
-        } 
-        Scene.hiddenIntersections.push(intersectPoint)
-      }
+  ({shortestDistance, nearestIntersect, nearestIntersectGeometry}, intersectable) => {
+    if (ray.touchedGeometry === intersectable) {
+      return {shortestDistance, nearestIntersect, nearestIntersectGeometry}
+    } 
+    let intersectPoint = null;
+    if (intersectable instanceof Circle) {
+      intersectPoint = rayCircleIntersection(ray, intersectable)
+    } else if (intersectable instanceof Line) {
+      intersectPoint = rayLineIntersection(ray, intersectable)
+    } else {
+      console.error('Unknown intersectable type')
+      return { shortestDistance, nearestIntersect, nearestIntersectGeometry }
     }
-    return {shortestDistance, nearestIntersect, nearestIntersectLine}
+
+    if (intersectPoint) {
+      const distance = roughDistance(intersectPoint, ray)
+      if(distance < shortestDistance){
+        nearestIntersect = intersectPoint
+        nearestIntersectGeometry = intersectable
+        shortestDistance = distance
+      } 
+      Scene.hiddenIntersections.push(intersectPoint)
+    }
+    
+    return {shortestDistance, nearestIntersect, nearestIntersectGeometry}
   }
 )
 
 function rayMapper(ray) {
-  let rayMeta = Scene.finishedLines.reduce(
+
+  let rayMeta = [...Scene.finishedLines, ...Scene.circles].reduce(
     rayIntersectReducer(ray), 
-    {shortestDistance: Infinity, nearestIntersect: null, nearestIntersectLine: null}
+    {
+      shortestDistance: Infinity, 
+      nearestIntersect: null, 
+      nearestIntersectGeometry: null
+    }
   )
+
+
   if (rayMeta.nearestIntersect) {
-    ray.reflect(rayMeta.nearestIntersectLine, rayMeta.nearestIntersect)
+    ray.reflect(rayMeta.nearestIntersectGeometry, rayMeta.nearestIntersect)
     if (ray.child && ray.maxChildren > 0) {
       // some dangerous recursive shit...
       forEachMappedRay(rayMapper(ray.child))
@@ -160,48 +200,14 @@ const forEachMappedRay =({ray, shortestDistance, nearestIntersect, nearestInters
   }
 }
 
-function checkRayLineIntersections(){
+function checkSceneIntersections(){
   intersectionsChecked = 0;
   Scene.intersections = []; // the nearest intersection
   Scene.hiddenIntersections = []; // all other intersections
   Scene._distances = [];
 
-  var nearestIntersect;
-  var nearestIntersectLine;
-  var shortestDistance = Infinity;
-  var distance = 0;
-
   Scene.primaryRays.map(rayMapper)
   .forEach(forEachMappedRay)
+}
 
-  // for(var ray of Scene.primaryRays){
-  //   shortestDistance = Infinity;
-  //   nearestIntersect = null;
-  //   nearestIntersectLine=null;
-
-  //   for(var line of Scene.finishedLines){
-  //     var intersectPoint = rayLineIntersection(ray, line);
-      
-  //     if(intersectPoint){
-  //       distance = roughDistance(intersectPoint, ray);
-  //       if(distance < shortestDistance){
-  //         nearestIntersect = intersectPoint;
-  //         nearestIntersectLine = line;
-  //         shortestDistance = distance;
-  //       } 
-  //       Scene.hiddenIntersections.push(intersectPoint);
-  //     }
-  //   }
-
-  //   if(nearestIntersect){
-  //     Scene.intersections.push(nearestIntersect)
-  //     ray.reflect(nearestIntersectLine, nearestIntersect)
-  //     Scene._distances.push(distanceBetween(nearestIntersect, ray));
-  //   } else {
-  //     ray.child = undefined
-  //     Scene._distances.push(10000);
-  //   }
-  // }
-};
-
-export {checkRayLineIntersections};
+export {checkSceneIntersections};

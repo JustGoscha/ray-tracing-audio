@@ -7,6 +7,7 @@ var Scene = {
   primaryRays: [],
   circles: [],
   finishedLines: [],
+  
   _distances: [],
   intersections: [],
   hiddenIntersections: [],

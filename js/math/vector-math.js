@@ -45,6 +45,12 @@ function angleBetween(v1, v2) {
   return ((vectorToAngle(v2) - vectorToAngle(v1)) + PI2)%PI2
 }
 
+/**
+ * Reflects a vector off another vector
+ * @param  {Point} v1 [description]
+ * @param  {Point} v2 [description]
+ * @return {Point}    reflected vector
+ */
 function reflectionVector(v1, v2) {
   const angle1 = vectorToAngle(v1)
   const angle2 = vectorToAngle(v2) % Math.PI
@@ -57,6 +63,32 @@ function reflectionVector(v1, v2) {
     x: Math.cos(reflectedAngle),
     y: Math.sin(reflectedAngle),
     angle: reflectedAngle
+  }
+}
+
+/**
+ * Reflects a vector off a circle
+ * @param  {Point} v1 Vector to reflect
+ * @param  {Circle} circle Circle to reflect off of
+ * @param  {Point} intersectionPoint Point where the vector hits the circle
+ * @return {Point} reflected vector
+ */
+function reflectOffCircle(v1, circle, intersectionPoint) {
+  // Calculate the normal vector (from center to intersection point)
+  const normal = {
+    x: intersectionPoint.x - circle.center.x,
+    y: intersectionPoint.y - circle.center.y
+  }
+  // Normalize the normal vector
+  const normalLength = Math.sqrt(normal.x * normal.x + normal.y * normal.y)
+  normal.x /= normalLength
+  normal.y /= normalLength
+  
+  // Use the reflection formula: R = V - 2(V·N)N
+  const dot = 2 * (v1.x * normal.x + v1.y * normal.y)
+  return {
+    x: v1.x - dot * normal.x,
+    y: v1.y - dot * normal.y
   }
 }
 
@@ -79,6 +111,7 @@ export {
   dotProduct,
   vectorToAngle,
   reflectionVector,
+  reflectOffCircle,
   normalize,
   distanceBetween,
   angleBetween,

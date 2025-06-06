@@ -37,20 +37,20 @@ Ray Tracing Audio is a web-based sound propagation engine that simulates how sou
 
 1. Build the project:
    ```
-   ./compile.sh
-   ```
-   Or run:
-   ```
-   npm install
-   gulp build
+   npm run build
    ```
 
 2. For development with automatic rebuilds:
    ```
-   ./watch.sh
+   npm run watch
    ```
 
-3. Open `index.html` in a browser to see the visualization and hear the audio.
+3. To build and get instructions for viewing:
+   ```
+   npm start
+   ```
+
+4. Open `index.html` in a browser to see the visualization and hear the audio.
 
 ## Project Structure
 
@@ -68,6 +68,19 @@ The project uses:
 - Gulp for building
 - Babel for ES6+ transpilation
 - Browserify for bundling
+- Prettier for code formatting
+
+### Code Formatting
+
+The project uses Prettier for consistent code formatting. To format your code:
+
+```bash
+# Format all files
+npm run format
+
+# Check if files are formatted correctly
+npm run format:check
+```
 
 ## License
 

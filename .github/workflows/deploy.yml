@@ -36,14 +36,15 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
+          node-version: '20.x'
           cache: 'npm'
       - run: npm ci
-      - run: ./compile.sh
+      - run: npm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3.0.1
         with:
-          # Upload entire repository
-          path: '.'
+          # Upload Vite build output
+          path: 'dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4.0.5
