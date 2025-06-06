@@ -6,9 +6,6 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var babelify = require('babelify');
 
-gulp.task('default', ['js']);
-gulp.task('build', ['js']);
-
 gulp.task('js', function(){
   var b = browserify({
     entries: 'js/main.js', 
@@ -29,3 +26,6 @@ gulp.task('js', function(){
   // .pipe(gulp.dest('build'));
 
 });
+
+gulp.task('default', gulp.series('js'));
+gulp.task('build', gulp.series('js'));
