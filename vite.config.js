@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  base: '/ray-tracing-audio/',
   root: '.',
   build: {
     outDir: 'dist',
