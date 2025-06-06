@@ -1,6 +1,7 @@
 bower_components
 node_modules
 build
+dist
 
 # IDE specific files
 .idea/
