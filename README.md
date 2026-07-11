@@ -1,3 +1,6 @@
+> [!NOTE]
+> **This experiment grew up:** the successor is **[omg-audio](https://github.com/JustGoscha/omg-audio)** — a real-time path-traced sound propagation engine in Rust/WASM with binaural (HRTF) rendering, wall transmission, portals, diffraction and head tracking. **[Live demo](https://justgoscha.github.io/omg-audio/web/)** (headphones!).
+
 # Ray Tracing Audio
 
 A sound engine for the web with sound propagation simulation with binaural capabilities. In early development!
